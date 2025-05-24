@@ -1,0 +1,28 @@
+
+import cv2
+import threading
+
+def show_camera(cam_index, window_name):
+    cap = cv2.VideoCapture(cam_index)
+    if not cap.isOpened():
+        print(f"Kamera {cam_index} açılamadı.")
+        return
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        cv2.imshow(window_name, frame)
+        if cv2.waitKey(1) == ord('q'):
+            break
+    cap.release()
+    cv2.destroyWindow(window_name)
+
+# Thread'lerle iki kamerayı aynı anda çalıştır
+t1 = threading.Thread(target=show_camera, args=(0, "Kamera 0"))
+t2 = threading.Thread(target=show_camera, args=(1, "Kamera 1"))
+
+t1.start()
+t2.start()
+
+t1.join()
+t2.join()
